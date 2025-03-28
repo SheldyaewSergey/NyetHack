@@ -1,3 +1,5 @@
+package com.bignerdranch.nyethack
+
 import java.io.File
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -13,7 +15,7 @@ private val menuData = File("data/tavern-menu-data.txt")
     .split("\n")
     .map { it.split(",")}
 
-private val menuItems = menuData.map {(_, name, _) -> name}
+private val menuItems = menuData.map { (_, name, _) -> name}
 
 val menuItemPrices = menuData.associate { (_, name, price) ->
     name to price.toDouble()
@@ -27,28 +29,28 @@ private val menuItemTypes = menuData.associate { (type, name, _) ->
 fun visitTavern() {
 
     val patrons: MutableSet<String> = firstNames.shuffled()
-        .zip(lastNames.shuffled()) {firstName, lastName -> "$firstName $lastName"}.toMutableSet()
+        .zip(lastNames.shuffled()) { firstName, lastName -> "$firstName $lastName"}.toMutableSet()
 
     val patronGold = mutableMapOf(
         TAVERN_MASTER to 86.00,
-        heroName to 4.50,
+        player.name to 4.50,
         *patrons.map {it to 6.00}.toTypedArray()
     )
     displayPatronBalances(patronGold)
 
-    narrate("\n$heroName sees several patrons in the tavern:")
+    narrate("\n${player.name} sees several patrons in the tavern:")
     narrate(patrons.joinToString())
 
     val itemOfDay = patrons.flatMap { getFavoriteMenuItems(it) }.random()
     narrate("The item of the day is it the $itemOfDay")
 
-    repeat(3) {placeOrder(patrons.random(), menuItems.random(), patronGold)}
+    repeat(3) { placeOrder(patrons.random(), menuItems.random(), patronGold) }
     displayPatronBalances(patronGold)
 
     patrons.filter { patron -> patronGold.getOrDefault(patron, 0.0) < 4.0 }.also{
         departingPatrons -> patrons -= departingPatrons
         patronGold -= departingPatrons
-    }.forEach{patron -> narrate("$heroName sees $patron departing the tavern")}
+    }.forEach{patron -> narrate("${player.name} sees $patron departing the tavern") }
     narrate("There are still some patrons in the tavern")
     narrate(patrons.joinToString())
 
@@ -87,7 +89,7 @@ private fun placeOrder(
 }
 
 private fun displayPatronBalances(patronGold: Map<String, Double>) {
-    narrate("$heroName  intuitively knows how much money each patron has")
+    narrate("${player.name}  intuitively knows how much money each patron has")
     patronGold.forEach{(patron, balance) ->
         narrate("$patron has ${"%.2f".format(balance)} gold")
     }
@@ -95,7 +97,7 @@ private fun displayPatronBalances(patronGold: Map<String, Double>) {
 
 fun menuFormat(menuItemPrices: Map<String, Double>){
     val stringLength = 34
-    narrate("$heroName enters $TAVERN_NAME")
+    narrate("${player.name} enters $TAVERN_NAME")
     narrate("\n*** Welcome to Taernyl's Folly ***")
     menuItemPrices.forEach{(name, price) ->
         val itemLength = price.toString() + name

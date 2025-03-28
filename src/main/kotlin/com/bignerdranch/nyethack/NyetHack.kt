@@ -1,11 +1,11 @@
-
-
-var heroName: String = ""
+package com.bignerdranch.nyethack
+val player = Player()
 fun main() {
-   heroName = promptHeroName()
 
     //changeNarratorMood()
-    narrate("$heroName, ${createTitle(heroName)}, heads to the town square")
+    narrate("${player.name} is ${player.title}")
+    player.changeName("Aurelia")
+    narrate("${player.name}, ${player.title}, heads to the town square")
     menuFormat(menuItemPrices)
     visitTavern()
 }
@@ -22,13 +22,4 @@ private fun promptHeroName(): String {
     return input*/
     println("Madrigal")
     return "Madrigal"
-}
-
-private fun createTitle(name: String): String {
-    return when {
-        name.all { it.isDigit() } -> "The Identifiable"
-        name.none { it.isLetter() } -> "The Witness Protection Member"
-        name.count {it.lowercase() in "aeiou" } > 4 -> "The Master of Vowel"
-        else -> "The Renowned Hero"
-    }
 }
